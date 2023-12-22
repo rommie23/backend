@@ -17,5 +17,11 @@ app.use(express.static("public"))       // for files data like(pdf, images etc.)
 
 app.use(cookieParser())
 
+// routes import ///////////////
+import userRouter from './routes/user.routes.js'
+
+// routes declaration///////////////
+app.use("/api/v1/users", userRouter)        // full route will be http://localhost:8000/api/v1/users/register (register is coming from user router line:23)
+
 // /////////// APP CONFIGURATION END /////////////////
 export {app}
