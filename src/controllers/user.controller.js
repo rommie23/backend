@@ -107,8 +107,9 @@ const loginUser = asyncHandler(async(req, res)=>{
 // successful verification will give access and refresh token to user
 // send cookies
     const {email, username, password} = req.body
+    console.log("email is",email)
 
-    if(!username || !email){
+    if(!(username || email)){
         throw new ApiErrors(400, 'username or email required')
     }
     const user = await User.findOne({
@@ -146,4 +147,27 @@ const loginUser = asyncHandler(async(req, res)=>{
 
 })
 
-export {registerUser, loginUser}
+const logoutUser=asyncHandler(async(req,res)=>{
+    User.findByIdAndUpdate(
+        req.user._id,
+        {
+            $set:{
+                refreshToken: undefined
+            }
+        },
+        {
+            new: true
+        }
+    )
+    const options = {
+        httpOnly: true,
+        secure : true
+    }
+    return res
+    .status(200)
+    .clearCookie("accessToken")
+    .clearCookie("refreshToken")
+    .json(new ApiResponse(200, {}, "user logged in"))
+})
+
+export {registerUser, loginUser, logoutUser}
